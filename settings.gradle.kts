@@ -23,11 +23,19 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MovieMatch"
+
+// app
 include(":app")
-include(":domain")
+
+// Core modules
 include(":core:network")
 include(":core:database")
 include(":core:ui")
+
+// Domain modules
+include(":domain")
+
+// Feature modules
 include(":feature:movies")
 include(":feature:detail")
 include(":feature:match")
