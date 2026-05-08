@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.qwin.moviematch.core.network"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24
