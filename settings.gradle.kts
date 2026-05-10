@@ -32,6 +32,3 @@ include(":core")
 
 // Feature modules
 include(":feature:movies")
-
-project(":core").projectDir = file("core")
-project(":feature:movies").projectDir = file("feature/movies")
