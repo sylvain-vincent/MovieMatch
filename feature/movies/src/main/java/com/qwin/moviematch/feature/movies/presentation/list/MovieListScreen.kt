@@ -35,29 +35,37 @@ fun MovieListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold { innerPadding ->
-        MovieListContent(uiState, onMovieClick, innerPadding)
-    }
-}
-
-@Composable
-fun MovieListContent(
-    uiState: MovieListUiState,
-    onMovieClick: (Int) -> Unit,
-    contentPadding: PaddingValues = PaddingValues(),
-) {
-    when (uiState) {
-        is MovieListUiState.Error -> MovieListError(uiState.message, contentPadding)
-        MovieListUiState.Loading -> MovieListLoader(contentPadding)
-        is MovieListUiState.Success -> MovieList(
-            movieList = uiState.movies,
-            contentPadding,
-            onMovieClick
+        MovieListContent(
+            uiState = uiState,
+            onMovieClick = onMovieClick,
+            contentPadding = innerPadding
         )
     }
 }
 
 @Composable
-fun MovieList(
+private fun MovieListContent(
+    uiState: MovieListUiState,
+    onMovieClick: (Int) -> Unit,
+    contentPadding: PaddingValues = PaddingValues(),
+) {
+    when (uiState) {
+        is MovieListUiState.Error -> MovieListError(
+            message = uiState.message,
+            contentPadding = contentPadding
+        )
+
+        MovieListUiState.Loading -> MovieListLoading(contentPadding = contentPadding)
+        is MovieListUiState.Success -> MovieListItems(
+            movieList = uiState.movies,
+            contentPadding = contentPadding,
+            onMovieClick = onMovieClick
+        )
+    }
+}
+
+@Composable
+private fun MovieListItems(
     movieList: List<Movie>,
     contentPadding: PaddingValues = PaddingValues(),
     onMovieClick: (Int) -> Unit
@@ -73,17 +81,17 @@ fun MovieList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(movieList, key = { movie -> movie.id }) { movie ->
-            MovieCard(movie, onMovieClick)
+            MovieCard(movie = movie, onMovieClick = onMovieClick)
         }
     }
 }
 
 @Composable
-fun MovieCard(movie: Movie, onMovieClick: (Int) -> Unit) {
+private fun MovieCard(movie: Movie, onMovieClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onMovieClick.invoke(movie.id) }
+            .clickable { onMovieClick(movie.id) }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -106,7 +114,7 @@ fun MovieCard(movie: Movie, onMovieClick: (Int) -> Unit) {
 }
 
 @Composable
-fun MovieListLoader(contentPadding: PaddingValues = PaddingValues()) {
+private fun MovieListLoading(contentPadding: PaddingValues = PaddingValues()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -118,7 +126,7 @@ fun MovieListLoader(contentPadding: PaddingValues = PaddingValues()) {
 }
 
 @Composable
-fun MovieListError(message: String, contentPadding: PaddingValues = PaddingValues()) {
+private fun MovieListError(message: String, contentPadding: PaddingValues = PaddingValues()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -131,7 +139,7 @@ fun MovieListError(message: String, contentPadding: PaddingValues = PaddingValue
 
 @Preview
 @Composable
-fun MovieListPreview() {
+fun MovieListItemsPreview() {
     val fakeList = listOf(
         Movie(
             id = 1,
@@ -158,5 +166,5 @@ fun MovieListPreview() {
             releaseDate = "2008-07-18",
         )
     )
-    MovieList(fakeList) {}
+    MovieListItems(fakeList) {}
 }
